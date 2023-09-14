@@ -35,10 +35,10 @@
             // 
             // notifyIcon
             // 
-            notifyIcon.BalloonTipText = "teste";
+            notifyIcon.BalloonTipText = "Tray Project Manager";
             notifyIcon.BalloonTipTitle = "Title";
             notifyIcon.Icon = (Icon)resources.GetObject("notifyIcon.Icon");
-            notifyIcon.Text = "notifyIcon";
+            notifyIcon.Text = "Tray Project Manager";
             notifyIcon.Visible = true;
             // 
             // MainAppForm
