@@ -64,7 +64,7 @@ namespace TrayProjectManager.Classes
                         if (folderName == null) { continue; }
                         ToolStripMenuItem subItem =
                             new(folderName, null, (object s, EventArgs e) => OpenFolderWithCode(
-                                new FolderPath(folderName, folder)
+                                new FolderPath(folderName, folder, FolderPathType.FOLDER)
                                 ));
                         mainItem.DropDownItems.Add(subItem);
                     }
@@ -107,7 +107,7 @@ namespace TrayProjectManager.Classes
             string path = picker.SelectedPath;
 
             configManager.settings.IndividualProjectPath = configManager.settings.
-                IndividualProjectPath.Append(new FolderPath(name, path)).ToArray();
+                IndividualProjectPath.Append(new FolderPath(name, path, FolderPathType.PROJECT)).ToArray();
 
             configManager.GenerateConfig();
             PopulateMenus();
@@ -125,7 +125,7 @@ namespace TrayProjectManager.Classes
             string path = picker.SelectedPath;
 
             configManager.settings.WatchFolderPaths = configManager.settings.
-                WatchFolderPaths.Append(new FolderPath(name, path)).ToArray();
+                WatchFolderPaths.Append(new FolderPath(name, path, FolderPathType.FOLDER)).ToArray();
 
             configManager.GenerateConfig();
             PopulateMenus();
@@ -139,10 +139,18 @@ namespace TrayProjectManager.Classes
 
         private void OpenFolderWithCode(FolderPath folderPath)
         {
+            if (!File.Exists(configManager.settings.VSCodePath))
+            {
+                MessageBox.Show("VSCode not found. Please check the application settings",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             FolderPath[] recentProjects = configManager.settings.RecentProjects
                 .Where(fp => fp.Path != folderPath.Path).Prepend(folderPath).Take(5).ToArray();
             configManager.settings.RecentProjects = recentProjects;
             configManager.GenerateConfig();
+            PopulateMenus();
 
             Process.Start(configManager.settings.VSCodePath, folderPath.Path);
         }
