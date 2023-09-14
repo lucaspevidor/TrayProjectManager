@@ -6,15 +6,23 @@ using System.Threading.Tasks;
 
 namespace TrayProjectManager.Classes
 {
+    public enum FolderPathType
+    {
+        FOLDER,
+        PROJECT
+    }
+
     public struct FolderPath
     {
         public string Name { get; }
         public string Path { get; }
+        public FolderPathType Type { get; }
 
-        public FolderPath(string name, string path)
+        public FolderPath(string name, string path, FolderPathType type)
         {
             Name = name;
             Path = path;
+            Type = type;
         }
     }
 
