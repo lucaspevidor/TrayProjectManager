@@ -47,13 +47,25 @@ namespace TrayProjectManager.Classes
                 }                
             }
 
-            Console.WriteLine("Hello!");
+            ValidatePaths();
         }
 
         public void GenerateConfig()
         {
+            ValidatePaths();
             string json = JsonConvert.SerializeObject(settings, Formatting.Indented);
             File.WriteAllText(configFilePath, json);
+        }
+
+        private void ValidatePaths()
+        {
+            FolderPath[] validRecent = settings.RecentProjects.Where(f => Directory.Exists(f.Path)).ToArray();
+            FolderPath[] validFolders = settings.WatchFolderPaths.Where(f => Directory.Exists(f.Path)).ToArray();
+            FolderPath[] validProjects = settings.IndividualProjectPath.Where(f => Directory.Exists(f.Path)).ToArray();
+
+            settings.RecentProjects = validRecent;
+            settings.WatchFolderPaths = validFolders;
+            settings.IndividualProjectPath = validProjects;
         }
     }
 }
