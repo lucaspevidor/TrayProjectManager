@@ -187,7 +187,7 @@ namespace TrayProjectManager.Classes
             configManager.GenerateConfig();
             PopulateMenus();
 
-            Process.Start(configManager.settings.VSCodePath, folderPath.Path);
+            Process.Start(configManager.settings.VSCodePath, $"\"{folderPath.Path}\"");
         }
 
         private void RemoveItem(FolderPath folderPath)
