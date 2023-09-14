@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Collections.Immutable;
 
 namespace TrayProjectManager.Classes
 {
@@ -106,6 +107,14 @@ namespace TrayProjectManager.Classes
             string name = picker.SelectedName;
             string path = picker.SelectedPath;
 
+            var existingItem = configManager.settings.IndividualProjectPath.Where(f => f.Path == path);
+            if (existingItem.Any())
+            {
+                MessageBox.Show("Project already added: " + existingItem.First().Name,
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             configManager.settings.IndividualProjectPath = configManager.settings.
                 IndividualProjectPath.Append(new FolderPath(name, path, FolderPathType.PROJECT)).ToArray();
 
@@ -123,6 +132,15 @@ namespace TrayProjectManager.Classes
 
             string name = picker.SelectedName;
             string path = picker.SelectedPath;
+
+            var existingItem = configManager.settings.WatchFolderPaths.Where(f => f.Path == path);
+            if (existingItem.Any())
+            {
+                MessageBox.Show("Folder already added: " + existingItem.First().Name,
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
 
             configManager.settings.WatchFolderPaths = configManager.settings.
                 WatchFolderPaths.Append(new FolderPath(name, path, FolderPathType.FOLDER)).ToArray();
