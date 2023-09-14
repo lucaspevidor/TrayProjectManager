@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FolderPicker));
             pathTextBox = new TextBox();
             browseButton = new Button();
             nameTextBox = new TextBox();
@@ -75,6 +76,11 @@
             Controls.Add(browseButton);
             Controls.Add(nameTextBox);
             Controls.Add(pathTextBox);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximizeBox = false;
+            MaximumSize = new Size(538, 118);
+            MinimizeBox = false;
+            MinimumSize = new Size(538, 118);
             Name = "FolderPicker";
             Text = "FolderPicker";
             ResumeLayout(false);

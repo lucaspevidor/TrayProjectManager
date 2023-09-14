@@ -88,7 +88,7 @@ namespace TrayProjectManager
             }
         }
 
-        private void OkButtonClicked(object sender, EventArgs e) 
+        private void OkButtonClicked(object sender, EventArgs e)
         {
             if (!Directory.Exists(pathTextBox.Text))
             {
