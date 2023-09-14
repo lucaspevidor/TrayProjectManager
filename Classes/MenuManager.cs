@@ -64,8 +64,8 @@ namespace TrayProjectManager.Classes
                         string folderName = folder.Split('\\').Last();
                         if (folderName == null) { continue; }
                         ToolStripMenuItem subItem =
-                            new(folderName, null, (object s, EventArgs e) => OpenFolderWithCode(
-                                new FolderPath(folderName, folder, FolderPathType.FOLDER)
+                            new(folderName, null, (object s, EventArgs e) => HandleMenuItemClick(
+                                new FolderPath(folderName, folder, FolderPathType.SUBFOLDER)
                                 ));
                         mainItem.DropDownItems.Add(subItem);
                     }
@@ -153,6 +153,11 @@ namespace TrayProjectManager.Classes
         {
             ConfigForm f = new ConfigForm(configManager);
             f.ShowDialog();
+        }
+
+        private void HandleMenuItemClick(FolderPath folderPath)
+        {
+            OpenFolderWithCode(folderPath);
         }
 
         private void OpenFolderWithCode(FolderPath folderPath)

@@ -9,6 +9,7 @@ namespace TrayProjectManager.Classes
     public enum FolderPathType
     {
         FOLDER,
+        SUBFOLDER,
         PROJECT
     }
 
