@@ -45,6 +45,7 @@ namespace TrayProjectManager.Classes
             }
             
             contextMenu.Items.Add(new ToolStripSeparator());
+            contextMenu.Items.Add("Settings", null, OpenSettings);
             contextMenu.Items.Add("Close", null, (object sender, EventArgs e) => Application.Exit());
 
             notifyIcon.ContextMenuStrip = contextMenu;
@@ -66,6 +67,12 @@ namespace TrayProjectManager.Classes
 
             configManager.GenerateConfig();
             PopulateMenus();
+        }
+
+        private void OpenSettings(object sender, EventArgs e)
+        {
+            ConfigForm f = new ConfigForm(configManager);
+            f.ShowDialog();
         }
     }
 }
