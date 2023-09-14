@@ -92,6 +92,7 @@ namespace TrayProjectManager.Classes
 
             contextMenu.Items.Add(new ToolStripLabel(" "));
             contextMenu.Items.Add(new ToolStripSeparator());
+            contextMenu.Items.Add("Refresh", null, (s, e) => PopulateMenus());
             contextMenu.Items.Add("Settings", null, OpenSettings);
             contextMenu.Items.Add("Close", null, (s, e) => Application.Exit());
 
@@ -162,7 +163,7 @@ namespace TrayProjectManager.Classes
 
         private void HandleMenuItemClick(FolderPath folderPath, MouseEventArgs e)
         {               
-            if (e.Button == MouseButtons.Left && folderPath.Type != FolderPathType.FOLDER)
+            if (e.Button == MouseButtons.Left)
             {
                 OpenFolderWithCode(folderPath);
             }
@@ -181,6 +182,22 @@ namespace TrayProjectManager.Classes
                 return;
             }
 
+            if (!Directory.Exists(folderPath.Path))
+            {
+                DialogResult res = MessageBox.Show(
+                    "Directory not found. Would you like to remove it?",
+                    "Error",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Error
+                );
+
+                if (res == DialogResult.Yes)
+                {
+                    RemoveItem(folderPath, askToRemove: false);
+                }
+                return;
+            }
+
             FolderPath[] recentProjects = configManager.settings.RecentProjects
                 .Where(fp => fp.Path != folderPath.Path).Prepend(folderPath).Take(5).ToArray();
             configManager.settings.RecentProjects = recentProjects;
@@ -190,12 +207,15 @@ namespace TrayProjectManager.Classes
             Process.Start(configManager.settings.VSCodePath, $"\"{folderPath.Path}\"");
         }
 
-        private void RemoveItem(FolderPath folderPath)
+        private void RemoveItem(FolderPath folderPath, bool askToRemove = true)
         {
-            DialogResult res = MessageBox.Show("Remove " + folderPath.Name + "?",
-                "Remove item", MessageBoxButtons.YesNo);
-            if (res == DialogResult.No)
-                return;
+            if (askToRemove)
+            {
+                DialogResult res = MessageBox.Show("Remove " + folderPath.Name + "?",
+                    "Remove item", MessageBoxButtons.YesNo);
+                if (res == DialogResult.No)
+                    return;
+            }            
 
             if (folderPath.Type == FolderPathType.FOLDER)
             {
