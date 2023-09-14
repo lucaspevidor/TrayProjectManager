@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Collections.Immutable;
+using System.Reflection.Metadata.Ecma335;
 
 namespace TrayProjectManager.Classes
 {
@@ -41,9 +42,10 @@ namespace TrayProjectManager.Classes
 
                 foreach(FolderPath project in  recentProjects)
                 {
-                    contextMenu.Items.Add(project.Name, null,
-                        (object s, EventArgs e) => OpenFolderWithCode(project)
-                    );
+                    FolderPath fp = new(project.Name, project.Path, FolderPathType.SUBFOLDER);
+                    ToolStripMenuItem item = new(fp.Name);                    
+                    item.MouseUp += (s, e) => HandleMenuItemClick(fp, e);
+                    contextMenu.Items.Add(item);
                 }
             }
 
@@ -58,15 +60,15 @@ namespace TrayProjectManager.Classes
                     string[] folders = Directory.GetDirectories(folderPath.Path);
 
                     ToolStripMenuItem mainItem = new(folderPath.Name);
+                    mainItem.MouseUp += (s, e) => HandleMenuItemClick(folderPath, e);
 
                     foreach(string folder in folders)
                     {
                         string folderName = folder.Split('\\').Last();
                         if (folderName == null) { continue; }
-                        ToolStripMenuItem subItem =
-                            new(folderName, null, (object s, EventArgs e) => HandleMenuItemClick(
-                                new FolderPath(folderName, folder, FolderPathType.SUBFOLDER)
-                                ));
+                        ToolStripMenuItem subItem = new(folderName);
+                        subItem.MouseUp += (s, e) => HandleMenuItemClick(
+                                new FolderPath(folderName, folder, FolderPathType.SUBFOLDER), e);
                         mainItem.DropDownItems.Add(subItem);
                     }
 
@@ -82,21 +84,21 @@ namespace TrayProjectManager.Classes
 
                 foreach(FolderPath project in projectList)
                 {
-                    contextMenu.Items.Add(project.Name, null,
-                        (object s, EventArgs e) => OpenFolderWithCode(project)
-                    );
+                    ToolStripMenuItem item = new(project.Name);
+                    item.MouseUp += (s, e) => HandleMenuItemClick(project, e);
+                    contextMenu.Items.Add(item);
                 }
             }
 
             contextMenu.Items.Add(new ToolStripLabel(" "));
             contextMenu.Items.Add(new ToolStripSeparator());
             contextMenu.Items.Add("Settings", null, OpenSettings);
-            contextMenu.Items.Add("Close", null, (object sender, EventArgs e) => Application.Exit());
+            contextMenu.Items.Add("Close", null, (s, e) => Application.Exit());
 
             notifyIcon.ContextMenuStrip = contextMenu;
         }
 
-        private void AddProject(object sender, EventArgs e)
+        private void AddProject(object? sender, EventArgs e)
         {
             FolderPicker picker = new(FolderPicker.DialogType.PROJECT);
             DialogResult res = picker.ShowDialog();
@@ -122,7 +124,7 @@ namespace TrayProjectManager.Classes
             PopulateMenus();
         }
 
-        private void AddFolder(object sender, EventArgs e)
+        private void AddFolder(object? sender, EventArgs e)
         {
             FolderPicker picker = new(FolderPicker.DialogType.FOLDER);
             DialogResult res = picker.ShowDialog();
@@ -155,9 +157,16 @@ namespace TrayProjectManager.Classes
             f.ShowDialog();
         }
 
-        private void HandleMenuItemClick(FolderPath folderPath)
-        {
-            OpenFolderWithCode(folderPath);
+        private void HandleMenuItemClick(FolderPath folderPath, MouseEventArgs e)
+        {               
+            if (e.Button == MouseButtons.Left && folderPath.Type != FolderPathType.FOLDER)
+            {
+                OpenFolderWithCode(folderPath);
+            }
+            if (e.Button == MouseButtons.Right && folderPath.Type != FolderPathType.SUBFOLDER) 
+            {
+                RemoveItem(folderPath);
+            }
         }
 
         private void OpenFolderWithCode(FolderPath folderPath)
@@ -176,6 +185,28 @@ namespace TrayProjectManager.Classes
             PopulateMenus();
 
             Process.Start(configManager.settings.VSCodePath, folderPath.Path);
+        }
+
+        private void RemoveItem(FolderPath folderPath)
+        {
+            DialogResult res = MessageBox.Show("Remove " + folderPath.Name + "?",
+                "Remove item", MessageBoxButtons.YesNo);
+            if (res == DialogResult.No)
+                return;
+
+            if (folderPath.Type == FolderPathType.FOLDER)
+            {
+                configManager.settings.WatchFolderPaths =
+                    configManager.settings.WatchFolderPaths.Where(f => f.Path != folderPath.Path).ToArray();
+            }
+            else if (folderPath.Type == FolderPathType.PROJECT)
+            {
+                configManager.settings.IndividualProjectPath =
+                    configManager.settings.IndividualProjectPath.Where(f => f.Path != folderPath.Path).ToArray();
+            }
+
+            configManager.GenerateConfig();
+            PopulateMenus();
         }
     }
 }
