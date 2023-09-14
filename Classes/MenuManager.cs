@@ -101,6 +101,7 @@ namespace TrayProjectManager.Classes
         private void AddProject(object? sender, EventArgs e)
         {
             FolderPicker picker = new(FolderPicker.DialogType.PROJECT);
+            picker.StartPosition = FormStartPosition.CenterScreen;
             DialogResult res = picker.ShowDialog();
 
             if (res != DialogResult.OK)
@@ -127,6 +128,7 @@ namespace TrayProjectManager.Classes
         private void AddFolder(object? sender, EventArgs e)
         {
             FolderPicker picker = new(FolderPicker.DialogType.FOLDER);
+            picker.StartPosition = FormStartPosition.CenterScreen;
             DialogResult res = picker.ShowDialog();
 
             if (res != DialogResult.OK)
@@ -154,6 +156,7 @@ namespace TrayProjectManager.Classes
         private void OpenSettings(object sender, EventArgs e)
         {
             ConfigForm f = new ConfigForm(configManager);
+            f.StartPosition = FormStartPosition.CenterScreen;
             f.ShowDialog();
         }
 
