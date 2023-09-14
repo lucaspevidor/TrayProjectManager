@@ -84,6 +84,8 @@ namespace TrayProjectManager
                 if (res == DialogResult.OK && !String.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
                     pathTextBox.Text = fbd.SelectedPath;
+                    var splittedPath = fbd.SelectedPath.Split('\\');
+                    nameTextBox.Text = splittedPath[splittedPath.Length - 1];
                 }
             }
         }
