@@ -23,12 +23,12 @@ namespace TrayProjectManager
             configManager = new ConfigManager();
             MenuManager menuManager = new(configManager, notifyIcon);
 
-            
+
         }
 
         protected override void SetVisibleCore(bool value)
         {
-            base.SetVisibleCore(value);
+            base.SetVisibleCore(false);
         }
 
         private void MainAppForm_FormClosing(object sender, FormClosingEventArgs e)
