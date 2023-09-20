@@ -62,6 +62,18 @@ namespace TrayProjectManager.Classes
                     ToolStripMenuItem mainItem = new(folderPath.Name);
                     mainItem.MouseUp += (s, e) => HandleMenuItemClick(folderPath, e);
 
+                    // Adds Open with Explorer and Open in WT
+                    ToolStripMenuItem openInExplorer = new("Open in Explorer");
+                    openInExplorer.MouseUp += (s, e) => OpenFolderWithExplorer(folderPath);
+                    mainItem.DropDownItems.Add(openInExplorer);
+
+                    ToolStripMenuItem openInTerminal = new("Open in Terminal");
+                    openInTerminal.MouseUp += (s, e) => OpenFolderWithWT(folderPath);
+                    mainItem.DropDownItems.Add(openInTerminal);
+
+                    mainItem.DropDownItems.Add(new ToolStripSeparator());
+                    
+                    // Adds each subfolder
                     foreach(string folder in folders)
                     {
                         string folderName = folder.Split('\\').Last();
@@ -210,6 +222,16 @@ namespace TrayProjectManager.Classes
             PopulateMenus();
 
             Process.Start(configManager.settings.VSCodePath, $"\"{folderPath.Path}\"");
+        }
+
+        private void OpenFolderWithWT(FolderPath folderPath)
+        {
+            Process.Start("wt", $"--startingDirectory \"{folderPath.Path}\"");
+        }
+
+        private void OpenFolderWithExplorer(FolderPath folderPath)
+        {
+            Process.Start("explorer", $"\"{folderPath.Path}\"");
         }
 
         private void RemoveItem(FolderPath folderPath, bool askToRemove = true)
