@@ -14,6 +14,7 @@ namespace TrayProjectManager
     internal partial class ConfigForm : Form
     {
         public string SelectedCodePath { get; private set; }
+        public int AutoRefresh { get; private set; }
         private ConfigManager configManager;
 
         public ConfigForm(ConfigManager configManager)
@@ -23,6 +24,7 @@ namespace TrayProjectManager
             this.configManager = configManager;
 
             pathTextBox.Text = configManager.settings.VSCodePath;
+            refreshInput.Value = configManager.settings.RefreshTime;
             ValidateOkButton(this, EventArgs.Empty);
 
             DefineEvents();
@@ -37,7 +39,7 @@ namespace TrayProjectManager
 
         private void ValidateOkButton(object sender, EventArgs e)
         {
-            okButton.Enabled = !string.IsNullOrWhiteSpace(pathTextBox.Text);
+            okButton.Enabled = !string.IsNullOrWhiteSpace(pathTextBox.Text) && refreshInput.Value >= 0;
         }
 
         private void BrowseButtonClicked(object sender, EventArgs e)
@@ -59,8 +61,10 @@ namespace TrayProjectManager
             if (File.Exists(pathTextBox.Text))
             {
                 SelectedCodePath = pathTextBox.Text;
+                AutoRefresh = (int)refreshInput.Value;
                 DialogResult = DialogResult.OK;
                 configManager.settings.VSCodePath = SelectedCodePath;
+                configManager.settings.RefreshTime = AutoRefresh;
                 configManager.GenerateConfig();
                 Close();
             }

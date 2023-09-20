@@ -33,7 +33,10 @@
             okButton = new Button();
             groupBox1 = new GroupBox();
             pathTextBox = new TextBox();
+            refreshInput = new NumericUpDown();
+            label1 = new Label();
             groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)refreshInput).BeginInit();
             SuspendLayout();
             // 
             // browseButton
@@ -73,11 +76,30 @@
             pathTextBox.Size = new Size(387, 23);
             pathTextBox.TabIndex = 2;
             // 
+            // refreshInput
+            // 
+            refreshInput.Location = new Point(112, 79);
+            refreshInput.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
+            refreshInput.Name = "refreshInput";
+            refreshInput.Size = new Size(120, 23);
+            refreshInput.TabIndex = 4;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(18, 81);
+            label1.Name = "label1";
+            label1.Size = new Size(88, 15);
+            label1.TabIndex = 5;
+            label1.Text = "Auto refresh (s)";
+            // 
             // ConfigForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(463, 117);
+            Controls.Add(label1);
+            Controls.Add(refreshInput);
             Controls.Add(groupBox1);
             Controls.Add(okButton);
             Icon = (Icon)resources.GetObject("$this.Icon");
@@ -89,7 +111,9 @@
             Text = "Settings";
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)refreshInput).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -98,5 +122,7 @@
         private Button okButton;
         private GroupBox groupBox1;
         private TextBox pathTextBox;
+        private NumericUpDown refreshInput;
+        private Label label1;
     }
 }
