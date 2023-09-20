@@ -13,6 +13,8 @@ namespace TrayProjectManager.Classes
         private string configFilePath;
         public Settings settings;
 
+        public event EventHandler ConfigGenerated; 
+
         public ConfigManager()
         {
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -55,6 +57,8 @@ namespace TrayProjectManager.Classes
             ValidatePaths();
             string json = JsonConvert.SerializeObject(settings, Formatting.Indented);
             File.WriteAllText(configFilePath, json);
+
+            ConfigGenerated?.Invoke(this, EventArgs.Empty);
         }
 
         private void ValidatePaths()

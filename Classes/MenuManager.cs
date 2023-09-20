@@ -99,6 +99,11 @@ namespace TrayProjectManager.Classes
             notifyIcon.ContextMenuStrip = contextMenu;
         }
 
+        public void RefreshMenu(object? sender,  EventArgs e)
+        {
+            PopulateMenus();
+        }
+
         private void AddProject(object? sender, EventArgs e)
         {
             FolderPicker picker = new(FolderPicker.DialogType.PROJECT);

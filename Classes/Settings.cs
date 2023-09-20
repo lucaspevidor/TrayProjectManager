@@ -33,5 +33,6 @@ namespace TrayProjectManager.Classes
         public FolderPath[] RecentProjects { get; set; } = Array.Empty<FolderPath>();
         public FolderPath[] WatchFolderPaths { get; set;} = Array.Empty<FolderPath>();
         public string VSCodePath { get; set; } = @"C:\Program Files\Microsoft VS Code\code.exe";
+        public int RefreshTime { get; set; } = 30;
     }
 }
