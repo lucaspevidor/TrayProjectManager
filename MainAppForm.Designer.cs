@@ -31,6 +31,7 @@
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainAppForm));
             notifyIcon = new NotifyIcon(components);
+            refreshTimer = new System.Windows.Forms.Timer(components);
             SuspendLayout();
             // 
             // notifyIcon
@@ -53,5 +54,6 @@
         #endregion
 
         private NotifyIcon notifyIcon;
+        private System.Windows.Forms.Timer refreshTimer;
     }
 }
